@@ -1,0 +1,157 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- <meta name="viewport" content="width= , initial-scale=1.0"> -->
+        <style>
+            button{
+                color:red;
+                font-size: 32px;
+                border-radius: 10px;
+            }
+            input{ font-size: 22px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif}
+        </style>
+        <title>Talk2Me_v04</title>
+    </head>
+    <body>
+        <h1>Talk To Me </h1>
+    <div>  
+        <button class "myButtonClass" id="myButton" onclick="speakFunction()">Talk To Me</button>
+        Speech Rate: <input type="number" step="0.1" min="0.1" max="10" id="speechRate">
+        <br>
+        <br>
+    <!-- select which voice to use  -->
+        <label for="which-voice">Choose a voice:</label>
+        <select id="voiceList" Style="font-size:14pt; color:blue" > </select>
+        
+    <br>
+         
+    </div>
+    
+    <div lang="es">
+    <textarea id="talkToMeTextBox" name="talkToMeTextBox" lang='es' rows="15" cols="80" 
+        style="font-size: 12pt; color: blue; margin: 20pt">Escribe o pega su texto aquí.</textarea>
+    </div>
+    <br>
+    <h2>Shortcut Key Ctrl-m</h2>
+    <h3>Things to do</h3>
+    <p></p>
+
+    
+    
+
+        
+<script>  /////////////////////////////////////////////////////////////////////////////////////////
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//  Load voices into dropdown menu
+
+var synth = window.speechSynthesis;
+//voices = synth.getVoices();
+
+
+//window.addEventListener('load',event => {               //   this waits until page is loaded
+window.addEventListener('load', (loadvoices) => {               //   this waits until page is loaded
+ // window.onload = (event) => {
+
+     voices = synth.getVoices();
+  console.log("voices loaded number = " + voices.length)
+
+  for(i = 0; i < voices.length ; i++) {
+    var option = document.createElement('option');
+    option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+    console.log("voices loaded number = " + voices.length)
+
+    if(voices[i].default) {
+      option.textContent += ' -- DEFAULT';
+    }
+
+    option.setAttribute('data-lang', voices[i].lang);
+    option.setAttribute('data-name', voices[i].name);
+    voiceList.appendChild(option);
+  }
+} )
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+     //**************************************************************************************************
+
+window.addEventListener('load', (event) => {               //   this waits until page is loaded then selects all text.
+    document.getElementById("talkToMeTextBox").focus();
+    document.getElementById("talkToMeTextBox").setSelectionRange(0,99999999);
+    document.getElementById('speechRate').value = localStorage.getItem('speechRate');
+    document.getElementById('voiceList').value = localStorage.getItem('speechVoice');
+
+});
+
+//**************************************************************************************************
+
+            window.speechSynthesis.onvoiceschanged = function() {
+            voices = window.speechSynthesis.getVoices()
+            var utterance = new SpeechSynthesisUtterance("Blanco nada");
+
+            };
+    //**************************************************************************************************
+           
+    function speakFunction() {
+        document.getElementById("myButton").style.background='#000000';
+                
+            let utterance;
+            document.getElementById("talkToMeTextBox").focus();
+
+            if(speechSynthesis.speaking) 
+                speechSynthesis.cancel(); 
+            else {
+                                                     
+            if(window.getSelection().toString().length < 1) {
+                document.getElementById("talkToMeTextBox").focus(); 
+                document.getElementById("talkToMeTextBox").setSelectionRange(0,99999999);  
+             }
+              
+             utterance = new SpeechSynthesisUtterance(window.getSelection().toString());             
+             
+            utterance.voice = voices[voiceList.selectedIndex];
+            utterance.rate = speechRate.value;
+            window.speechSynthesis.speak(utterance);
+            console.log("voiceList.value = " + voiceList.value);
+            console.log("voiceList.selectedIndex = " + voiceList.selectedIndex);
+
+            localStorage.setItem('speechRate', speechRate.value);
+            localStorage.setItem('speechVoice', voiceList.value);
+               
+            }   //-----  end of else statement
+           
+
+        utterance.onend = function(event) {
+            document.getElementById("myButton").style.background='white';
+            document.getElementById("talkToMeTextBox").focus();   
+        }
+
+          }  //********   end of speakFunction()
+    
+     
+
+///*****************************************************************************
+
+//******************************************************************************************
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'm' && e.ctrlKey) {
+ 
+		speakFunction();  //<!-- this speaks the selected text using Ctrl-m   -->
+    }
+	
+});
+
+//******************************************************************************************
+
+//******************************************************************************************
+        </script>
+
+
+
+    
+    
+    
+    
+    
+    </body>
+    </html>
