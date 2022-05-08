@@ -118,7 +118,15 @@ function speakFunction() {
 
           }  //********   end of speakFunction()
     //***********************************************************************************************
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'm' && e.ctrlKey) {
+ 
+		speakFunction();  //<!-- this speaks the selected text using Ctrl-m   -->
+    }
+	
+});
 
+//******************************************************************************************
 
     </script>
 </body>
